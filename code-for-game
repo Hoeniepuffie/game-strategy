@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+
+class Unit {
+  public:
+    int x, y;
+    int health;
+    int attack;
+
+    Unit(int x, int y, int health, int attack) : x(x), y(y), health(health), attack(attack) {}
+
+
+    void move(int dx, int dy) {
+        x += dx;
+        y += dy;
+    }
+    void attackUnit(Unit &unit) {
+        unit.health -= attack;
+    }
+};
+
+class Game {
+  public:
+    std::vector<Unit> units;
+
+    Game() {
+        units.push_back(Unit(0, 0, 100, 10));
+        units.push_back(Unit(1, 1, 80, 20));
+    }
+    void display() {
+        std::cout << "Unit count: " << units.size() << std::endl;
+        for (Unit unit : units) {
+            std::cout << "Unit at (" << unit.x << ", " << unit.y << ") with health " << unit.health << std::endl;
+        }
+    }
+    void playTurn() {
+        for (Unit &unit : units) {
+            int dx = 0, dy = 0;
+            std::cout << "Enter move for unit at (" << unit.x << ", " << unit.y << "): ";
+            std::cin >> dx >> dy;
+            unit.move(dx, dy);
+
+            for (Unit &otherUnit : units) {
+                if (&unit == &otherUnit) continue;
+                if (unit.x == otherUnit.x && unit.y == otherUnit.y) {
+                    unit.attackUnit(otherUnit);
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    Game game;
+    while (true) {
+        game.display();
+        game.playTurn();
+    }
+    return 0;
+}
